@@ -1,11 +1,17 @@
-import bcrypt from "bcrypt";
+import { compare, hash } from "bcrypt";
 
-export const generateHash = async ({ plaintext }: { plaintext: string }) => {
-  const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(plaintext, salt);
-};
+export const generateHash = async (
+   plaintext: string,
+   saltRound: number = Number(process.env.SALT)
+   ): Promise<string> => {
+       return await hash(plaintext, saltRound);
+   }
+  
 
-export const compareHash = async ({ plaintext, hashValue }: { plaintext: string; hashValue: string }) => {
-  if (!plaintext || !hashValue) throw new Error("data and hash arguments required");
-  return await bcrypt.compare(plaintext, hashValue);
-};
+
+
+export const compareHash = async ( plaintext: string, hash: string ):
+Promise<boolean> => {
+  return await compare(plaintext, hash);
+
+}

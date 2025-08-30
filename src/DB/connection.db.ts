@@ -1,21 +1,19 @@
-import mongoose, { ConnectOptions } from "mongoose";
+import  { connect } from "mongoose";
 
 const connectDB = async (): Promise<void> => {
   try {
-    const uri: string | undefined = process.env.DB_URI;
+  
 
-    if (!uri) {
-      throw new Error("DB_URI is not defined in environment variables");
-    }
+ 
 
-    const result = await mongoose.connect(uri, {
+    const result = await connect(  process.env.DB_URI as string, {
       serverSelectionTimeoutMS: 3000,
-    } as ConnectOptions);
+    });
 
     console.log(result.models);
     console.log("DB connected ✅");
-  } catch (error: any) {
-    console.error("Fail to connect on DB❌ ", error.message);
+  } catch (error) {
+    console.error("Fail to connect on DB❌ ");
   }
 };
 

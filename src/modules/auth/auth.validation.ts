@@ -1,28 +1,58 @@
 import { z } from "zod";
-
-export const signup = {
-  body: z.object({
-    fullName: z.string().min(2),
-    email: z.string().email(),
-    password: z.string().min(6),
-    confirmPassword: z.string(),
-    phone: z.string().min(10),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  }),
-};
-
-export const confirmEmail = {
-  body: z.object({
-    email: z.string().email(),
-    otp: z.string().length(6),
-  }),
-};
+import { generalFields } from "../../middleware/validation.middleware";
 
 export const login = {
   body: z.object({
-    email: z.string().email(),
-    password: z.string(),
+    email: generalFields.email,
+    password: generalFields.password,
   }),
+};
+
+export const signup = {
+  body: login.body
+    .extend({
+      userName: generalFields.username,
+      confirmPassword: generalFields.confirmPassword,
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    }),
+};
+
+export const confirmEmail = {
+  body: z.strictObject({
+    email: generalFields.email,
+    otp: generalFields.otp,
+  }),
+};
+
+export const signupWithGmail = {
+  body: z.strictObject({
+    idToken: z.string(),
+  }),
+};
+
+export const sendForgotCode = {
+  body: z.strictObject({
+    email: generalFields.email,
+  }),
+};
+
+export const verifyForgotPassword = {
+  body: sendForgotCode.body.extend({
+    otp: generalFields.otp,
+  }),
+};
+
+export const resetForgotPassword = {
+  body: verifyForgotPassword.body
+    .extend({
+      password: generalFields.password,
+      confirmPassword: generalFields.confirmPassword,
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Password mismatch confirm-password",
+      path: ["confirmPassword"],
+    }),
 };

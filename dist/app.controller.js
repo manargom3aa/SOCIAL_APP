@@ -10,6 +10,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const user_controller_1 = __importDefault(require("./modules/user/user.controller"));
 const auth_controller_1 = __importDefault(require("./modules/auth/auth.controller"));
 const error_response_1 = require("./utils/response/error.response");
 const connection_db_1 = __importDefault(require("./DB/connection.db"));
@@ -33,6 +34,7 @@ const bootstrap = async () => {
         });
     });
     app.use("/auth", auth_controller_1.default);
+    app.use("/user", user_controller_1.default);
     app.use(error_response_1.globalErrorHandling);
     app.use("{/*dummy}", (req, res) => {
         return res.status(404).json({ message: "Invalid Routing" });

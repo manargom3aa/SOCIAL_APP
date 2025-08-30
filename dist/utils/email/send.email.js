@@ -1,24 +1,23 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
-const nodemailer_1 = __importDefault(require("nodemailer"));
-const sendEmail = async ({ to, subject, text, html }) => {
-    const transporter = nodemailer_1.default.createTransport({
+const nodemailer_1 = require("nodemailer");
+const error_response_1 = require("../response/error.response");
+const sendEmail = async (data) => {
+    if (!data.html && !data.attachments?.length && !data.text) {
+        throw new error_response_1.BadRequest("Missing email content");
+    }
+    const transporter = (0, nodemailer_1.createTransport)({
         service: "gmail",
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
         },
     });
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
+        ...data,
         from: process.env.EMAIL_USER,
-        to,
-        subject: subject || "Confirm Your Email",
-        text: text || "Please confirm your email",
-        html: html || `<p>Please confirm your email</p>`,
     });
+    console.log("Message sent: ", info.messageId);
 };
 exports.sendEmail = sendEmail;

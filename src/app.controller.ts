@@ -2,20 +2,20 @@
 import { resolve } from "node:path";
 import { config } from "dotenv";
 
-// 🔹 تحميل متغيرات البيئة
+
 config({ path: resolve("./config/.env.development") });
 
 import express, { type Express, type Request, type Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-
+import userController from "./modules/user/user.controller";
 import authController from "./modules/auth/auth.controller";
 import { globalErrorHandling } from "./utils/response/error.response";
-import connectDB from "./DB/connection.db";  // ✅ استيراد الاتصال بالـ DB
+import connectDB from "./DB/connection.db";   
 
 
-// 🔹 إعداد Rate Limiter
+
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // ساعة واحدة
   max: 2000,                // أقصى عدد طلبات
@@ -48,6 +48,8 @@ const bootstrap = async (): Promise<void> => {
 
   //-------------------modules--------------------
   app.use("/auth", authController);
+  app.use("/user", userController);
+
 
   app.use(globalErrorHandling);
 

@@ -21,6 +21,31 @@ export class BadRequest extends AppError{
     }
 }
 
+export class NotFoundException extends AppError {
+  constructor(message: string = "Resource not found", cause?: unknown) {
+    super(message, 404, cause);
+  }
+}
+
+export class UnauthorizedException extends AppError {
+  constructor(message: string, cause?: unknown) {
+    super(message, 401, cause);
+  }
+}
+
+
+export class ForbiddenException extends AppError {
+  constructor(message: string, cause?: unknown) {
+    super(message, 401, cause);
+  }
+}
+
+export class ConflictException extends AppError{
+    constructor(message: string, cause?: unknown){
+        super(message,403,cause)
+    }
+}
+
 export const globalErrorHandling = (error:IError , req:Request, res:Response, next:NextFunction)=>{
   return res.status(error.statusCode||500).json({
     error_message: error.message || "something went wrong !",
